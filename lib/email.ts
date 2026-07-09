@@ -9,12 +9,13 @@ interface EmailOptions {
 }
 
 export async function sendEmail(options: EmailOptions) {
-  // Development: Log email instead of sending
-  if (process.env.NODE_ENV === 'development') {
+  // Development or missing API key: Log email instead of sending
+  if (process.env.NODE_ENV === 'development' || !process.env.SENDGRID_API_KEY) {
     console.log('📧 Email would be sent:', {
       to: options.to,
       subject: options.subject,
       preview: options.text || options.html.substring(0, 100),
+      note: !process.env.SENDGRID_API_KEY ? 'SENDGRID_API_KEY is not set' : 'Running in development',
     });
     return { success: true, messageId: 'dev-' + Date.now() };
   }

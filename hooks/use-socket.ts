@@ -1,48 +1,20 @@
 import { useEffect, useState } from 'react';
-import { io, Socket } from 'socket.io-client';
 
-let socket: Socket | null = null;
+// STUB: Socket.IO has been removed for Vercel/Serverless compatibility.
+// If realtime features are needed in the future, consider using Supabase Realtime.
 
 export function useSocket(userId?: string) {
   const [isConnected, setIsConnected] = useState(false);
   const [transport, setTransport] = useState('N/A');
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-
-    // Initialize socket connection
-    if (!socket) {
-      socket = io({
-        path: '/api/socket',
-        transports: ['websocket', 'polling'],
-      });
-
-      socket.on('connect', () => {
-        setIsConnected(true);
-        setTransport(socket!.io.engine.transport.name);
-
-        socket!.io.engine.on('upgrade', (transport) => {
-          setTransport(transport.name);
-        });
-
-        // Join user room if userId is provided
-        if (userId) {
-          socket!.emit('join', userId);
-        }
-      });
-
-      socket.on('disconnect', () => {
-        setIsConnected(false);
-      });
-    }
-
-    return () => {
-      // Don't disconnect on unmount, keep connection alive
-    };
+    // Stub implementation
+    setIsConnected(false);
+    setTransport('none');
   }, [userId]);
 
   return {
-    socket,
+    socket: null,
     isConnected,
     transport,
   };
@@ -53,19 +25,13 @@ export function useSocketEvent<T = any>(
   callback: (data: T) => void
 ) {
   useEffect(() => {
-    if (!socket) return;
-
-    socket.on(event, callback);
-
-    return () => {
-      socket?.off(event, callback);
-    };
+    // Stub implementation - do nothing
   }, [event, callback]);
 }
 
 export function emitSocketEvent(event: string, data: any) {
-  if (!socket) return;
-  socket.emit(event, data);
+  // Stub implementation - do nothing
+  console.log(`[Socket Stub] Event ${event} would have been emitted with:`, data);
 }
 
 // Specific hooks for common events

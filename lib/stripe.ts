@@ -1,10 +1,8 @@
 import Stripe from 'stripe';
 
-if (!process.env.STRIPE_SECRET_KEY) {
-  throw new Error('STRIPE_SECRET_KEY is not defined');
-}
-
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+// We don't throw an error here so the app can build and start even without Stripe configured.
+// Functions that actually use Stripe will fail if the key is invalid.
+export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'dummy_key', {
   apiVersion: '2024-11-20.acacia',
   typescript: true,
 });
